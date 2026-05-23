@@ -88,10 +88,10 @@ public class MailingListService {
         Subscriber subscriber = new Subscriber();
         subscriber.setName(request.name());
         subscriber.setEmail(request.email());
-        list.addSubscriber(subscriber);
+        subscriber.setMailingList(list);
 
-        mailingListRepository.save(list);
-        return toSubscriberResponse(subscriber);
+        // save the subscriber directly so the generated id is set on the way back
+        return toSubscriberResponse(subscriberRepository.save(subscriber));
     }
 
     @Transactional

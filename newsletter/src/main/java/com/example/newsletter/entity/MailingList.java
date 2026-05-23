@@ -42,14 +42,4 @@ public class MailingList {
 
     @OneToMany(mappedBy = "mailingList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscriber> subscribers = new ArrayList<>();
-
-    public void addSubscriber(Subscriber subscriber) {
-        subscribers.add(subscriber);
-        subscriber.setMailingList(this);
-    }
-
-    public void removeSubscriber(Subscriber subscriber) {
-        subscribers.remove(subscriber);
-        subscriber.setMailingList(null);
-    }
 }
