@@ -5,6 +5,12 @@ It is built with Java and Spring Boot. Campaigns can be scheduled for a future
 time, and at that time the app sends them to every subscriber on the linked
 list. Sending is simulated with log messages instead of a real email server.
 
+## Deployment URL
+
+Live API base URL: **TBD (added after deployment to Render)**
+
+- Swagger UI: `<deployment-url>/swagger-ui.html`
+
 ## Features
 
 - User registration and login using JWT authentication
@@ -24,7 +30,7 @@ list. Sending is simulated with log messages instead of a real email server.
 - Spring Boot 3.5.16
 - Spring Security with JWT
 - Spring Data JPA and Hibernate
-- MySQL
+- PostgreSQL (in production) and MySQL (local development) - JPA works with both
 - Maven
 - Swagger for API docs
 - Postman for testing
@@ -37,9 +43,9 @@ someone else's list or campaign returns 403.
 
 ## Database
 
-The app uses a MySQL database named newsletter_db. The tables are created
-automatically by Hibernate when the app starts, so no SQL script is needed.
-Main tables:
+The app uses a relational database - PostgreSQL in production (on Render) and MySQL
+for local development. The tables are created automatically by Hibernate when the app
+starts, so no SQL script is needed. Main tables:
 
 - users, user_roles
 - mailing_lists
@@ -49,30 +55,42 @@ Main tables:
 
 ## How to Run
 
-1. Install Java 21 and MySQL.
-2. The app creates the newsletter_db database automatically on first run.
-3. Copy the example config file and fill in your own values.
+The app reads its database connection and secrets from environment variables (see
+`.env.example`). You need a running database (PostgreSQL or MySQL) and these variables:
 
-   Copy this file:
+```
+SPRING_DATASOURCE_URL       jdbc:postgresql://HOST:5432/DBNAME   (or a MySQL URL)
+SPRING_DATASOURCE_USERNAME  your database user
+SPRING_DATASOURCE_PASSWORD  your database password
+JWT_SECRET                  a long random string
+```
 
-   newsletter/src/main/resources/application-local.properties.example
+Run from the newsletter folder:
 
-   to a new file named application-local.properties in the same folder, and set:
+```
+cd newsletter
+./mvnw spring-boot:run
+```
 
-   ```
-   spring.datasource.username=root
-   spring.datasource.password=YOUR_MYSQL_PASSWORD
-   jwt.secret=SOME_LONG_RANDOM_TEXT
-   ```
+The app starts on http://localhost:8080 (Swagger UI at /swagger-ui.html).
 
-4. Run the app from the newsletter folder:
+## Deployment
 
-   ```
-   cd newsletter
-   ./mvnw spring-boot:run
-   ```
+Deployed as a Docker web service on Render, backed by a free PostgreSQL database.
 
-The app starts on http://localhost:8080
+1. Push this repo to GitHub (public).
+2. On Render: New -> Web Service -> connect this repo. Set the Root Directory to
+   `newsletter` (the Maven project lives there); Render uses the Dockerfile.
+3. Create a free PostgreSQL database on Render.
+4. Set environment variables on the web service: `SPRING_DATASOURCE_URL` (the JDBC
+   form, `jdbc:postgresql://...`), `SPRING_DATASOURCE_USERNAME`,
+   `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`. Render provides `PORT` automatically.
+5. Deploy. The live URL goes at the top of this README.
+
+Note: on Render's free tier the service sleeps after about 15 minutes of inactivity.
+The scheduler that sends due campaigns only runs while the app is awake, so a campaign
+scheduled to send during an idle period is sent the next time the app wakes (any
+request wakes it).
 
 ## API Documentation
 
