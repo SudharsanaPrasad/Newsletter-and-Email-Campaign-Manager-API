@@ -7,9 +7,13 @@ list. Sending is simulated with log messages instead of a real email server.
 
 ## Deployment URL
 
-Live API base URL: **TBD (added after deployment to Render)**
+Live API base URL: **https://newsletter-and-email-campaign-manager-api.onrender.com**
 
-- Swagger UI: `<deployment-url>/swagger-ui.html`
+- Swagger UI: https://newsletter-and-email-campaign-manager-api.onrender.com/swagger-ui.html
+
+Hosted on Render (free tier) with a PostgreSQL database. The free instance sleeps
+after about 15 minutes of inactivity, so the first request after idle can take
+30-50 seconds to wake up.
 
 ## Features
 
