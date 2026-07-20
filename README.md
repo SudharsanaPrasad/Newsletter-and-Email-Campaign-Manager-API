@@ -79,8 +79,8 @@ The app starts on http://localhost:8080 (Swagger UI at /swagger-ui.html).
 Deployed as a Docker web service on Render, backed by a free PostgreSQL database.
 
 1. Push this repo to GitHub (public).
-2. On Render: New -> Web Service -> connect this repo. Set the Root Directory to
-   `newsletter` (the Maven project lives there); Render uses the Dockerfile.
+2. On Render: New -> Web Service -> connect this repo. Leave the Root Directory
+   blank; Render uses the Dockerfile at the repo root (it builds the app in newsletter/).
 3. Create a free PostgreSQL database on Render.
 4. Set environment variables on the web service: `SPRING_DATASOURCE_URL` (the JDBC
    form, `jdbc:postgresql://...`), `SPRING_DATASOURCE_USERNAME`,

@@ -1,7 +1,10 @@
+# Repo-root Dockerfile so Render finds it with no Root Directory setting.
+# The Maven project lives in newsletter/, so we build from there.
+
 # --- build stage: compile and package the jar ---
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-COPY . .
+COPY newsletter/ ./
 RUN chmod +x mvnw && ./mvnw -q clean package -DskipTests
 
 # --- run stage: small JRE image that runs the jar ---
